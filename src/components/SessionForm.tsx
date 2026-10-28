@@ -31,7 +31,7 @@ export function SessionForm({
     setBusy(true);
     const { data, error } = await supabase.from("training_sessions").insert({ ...f, coach_name: coachName }).select().single();
     setBusy(false);
-    if (error || !data) return toast.error("Salvataggio non riuscito");
+    if (error || !data) { toast.error("Salvataggio non riuscito"); return; }
     toast.success("Sessione salvata");
     onSaved(data);
     setF(empty);

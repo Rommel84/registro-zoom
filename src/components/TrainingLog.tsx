@@ -47,7 +47,7 @@ export function TrainingLog({ session }: { session: Session }) {
   async function remove(id: string) {
     if (!confirm("Eliminare questa sessione?")) return;
     const { error } = await supabase.from("training_sessions").delete().eq("id", id);
-    if (error) return toast.error("Eliminazione non riuscita");
+    if (error) { toast.error("Eliminazione non riuscita"); return; }
     setRows((r) => r.filter((x) => x.id !== id));
   }
 
@@ -151,7 +151,7 @@ export function TrainingLog({ session }: { session: Session }) {
       <SessionForm
         open={open}
         onOpenChange={setOpen}
-        coachName={(session.user.user_metadata?.full_name as string) || session.user.email || ""}
+        coachName={(session.user.user_metadata?.["full_name"] as string) || session.user.email || ""}
         onSaved={(row) => setRows((r) => [row, ...r].sort((a, b) => b.session_date.localeCompare(a.session_date)))}
       />
     </div>
