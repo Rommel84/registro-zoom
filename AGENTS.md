@@ -8,3 +8,7 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+## Rules
+- Training sessions live in one shared table readable by all signed-in coaches; only the author may edit/delete (RLS) — the log is a club-wide diary.
+- The home route swaps between the sign-in screen and the log based on the session, so there are no separate protected routes.
