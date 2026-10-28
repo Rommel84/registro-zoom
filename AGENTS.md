@@ -10,5 +10,5 @@
 <!-- LOVABLE:END -->
 
 ## Rules
-- Training sessions live in one shared table readable by all signed-in coaches; only the author may edit/delete (RLS) — the log is a club-wide diary.
-- The home route swaps between the sign-in screen and the log based on the session, so there are no separate protected routes.
+- Training sessions use one public shared table with SELECT and INSERT access only; public UPDATE and DELETE are denied to prevent unauthenticated destructive changes.
+- The home route renders the training log directly without session checks; the session form collects the coach name because accounts are not required.
