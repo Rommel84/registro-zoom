@@ -14,7 +14,57 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      training_sessions: {
+        Row: {
+          athletes: number
+          coach_name: string
+          created_at: string
+          discipline: string
+          duration_min: number
+          focus: string
+          group_name: string
+          id: string
+          location: string
+          notes: string
+          rating: number
+          session_date: string
+          snow: string
+          user_id: string
+        }
+        Insert: {
+          athletes?: number
+          coach_name?: string
+          created_at?: string
+          discipline?: string
+          duration_min?: number
+          focus?: string
+          group_name?: string
+          id?: string
+          location?: string
+          notes?: string
+          rating?: number
+          session_date?: string
+          snow?: string
+          user_id?: string
+        }
+        Update: {
+          athletes?: number
+          coach_name?: string
+          created_at?: string
+          discipline?: string
+          duration_min?: number
+          focus?: string
+          group_name?: string
+          id?: string
+          location?: string
+          notes?: string
+          rating?: number
+          session_date?: string
+          snow?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
