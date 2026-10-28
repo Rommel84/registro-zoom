@@ -12,3 +12,6 @@
 ## Rules
 - Training sessions use one public shared table with SELECT and INSERT access only; public UPDATE and DELETE are denied to prevent unauthenticated destructive changes.
 - The home route renders the training log directly without session checks; the session form collects the coach name because accounts are not required.
+- Preserve the original register as a same-origin embedded document, with a typed browser bridge for shared session reads and inserts; this retains its complete original UI without reintroducing account checks.
+- Auxiliary original-register data stays device-local; do not publish the original bundled athlete roster, which contains children's personal details.
+- Store original session details as versioned JSON in the existing notes column and decode legacy rows, preserving the existing shared table and denying shared updates/deletes.
