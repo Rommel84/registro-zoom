@@ -13,17 +13,17 @@ const DISCIPLINES = ["Slalom", "Gigante", "Super-G", "Discesa", "Tecnica libera"
 const SNOW = ["Polvere", "Compatta", "Ghiacciata", "Primaverile", "Artificiale"];
 
 export function SessionForm({
-  open, onOpenChange, coachName, onSaved,
+  open, onOpenChange, onSaved,
 }: {
   open: boolean;
   onOpenChange: (o: boolean) => void;
-  coachName: string;
   onSaved: (row: Tables<"training_sessions">) => void;
 }) {
   const today = new Date().toISOString().slice(0, 10);
   const empty = { session_date: today, discipline: "Gigante", location: "", group_name: "", athletes: 0, duration_min: 120, snow: "", focus: "", notes: "", rating: 3 };
   const [f, setF] = useState(empty);
   const [busy, setBusy] = useState(false);
+  const [coachName, setCoachName] = useState("");
   const set = <K extends keyof typeof f>(k: K, v: (typeof f)[K]) => setF((p) => ({ ...p, [k]: v }));
 
   async function save(e: React.FormEvent) {
@@ -45,6 +45,10 @@ export function SessionForm({
           <SheetTitle className="font-display text-2xl uppercase">Nuova sessione</SheetTitle>
         </SheetHeader>
         <form onSubmit={save} className="space-y-4 px-4 pb-6 max-w-2xl mx-auto w-full">
+          <div className="space-y-1.5">
+            <Label htmlFor="coach-name">Allenatore</Label>
+            <Input id="coach-name" required value={coachName} onChange={(e) => setCoachName(e.target.value)} />
+          </div>
           <div className="grid grid-cols-2 gap-3">
             <Field label="Data"><Input type="date" required value={f.session_date} onChange={(e) => set("session_date", e.target.value)} /></Field>
             <Field label="Durata (min)"><Input type="number" min={0} value={f.duration_min} onChange={(e) => set("duration_min", Number(e.target.value))} /></Field>

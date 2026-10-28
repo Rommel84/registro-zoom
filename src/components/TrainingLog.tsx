@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
-import type { Session } from "@supabase/supabase-js";
 import { toast } from "sonner";
-import { LogOut, Plus, MapPin, Users, Clock, Snowflake, Trash2, Star } from "lucide-react";
+import { Plus, MapPin, Users, Clock, Snowflake, Star } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
 import { Button } from "@/components/ui/button";
@@ -10,12 +9,11 @@ import { SessionForm } from "@/components/SessionForm";
 type Row = Tables<"training_sessions">;
 export const DISCIPLINES = ["Slalom", "Gigante", "Super-G", "Discesa", "Tecnica libera", "Atletica"] as const;
 
-export function TrainingLog({ session }: { session: Session }) {
+export function TrainingLog() {
   const [rows, setRows] = useState<Row[]>([]);
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
   const [filter, setFilter] = useState<string>("Tutte");
-  const [mineOnly, setMineOnly] = useState(false);
 
   async function load() {
     const { data, error } = await supabase
@@ -30,8 +28,8 @@ export function TrainingLog({ session }: { session: Session }) {
   useEffect(() => { load(); }, []);
 
   const visible = useMemo(
-    () => rows.filter((r) => (filter === "Tutte" || r.discipline === filter) && (!mineOnly || r.user_id === session.user.id)),
-    [rows, filter, mineOnly, session.user.id],
+    () => rows.filter((r) => filter === "Tutte" || r.discipline === filter),
+    [rows, filter],
   );
 
   const stats = useMemo(() => {
@@ -44,13 +42,6 @@ export function TrainingLog({ session }: { session: Session }) {
     return { count: month.length, hours: Math.round(hours * 10) / 10, total: rows.length };
   }, [rows]);
 
-  async function remove(id: string) {
-    if (!confirm("Eliminare questa sessione?")) return;
-    const { error } = await supabase.from("training_sessions").delete().eq("id", id);
-    if (error) { toast.error("Eliminazione non riuscita"); return; }
-    setRows((r) => r.filter((x) => x.id !== id));
-  }
-
   return (
     <div className="min-h-screen pb-28">
       <header className="bg-glacier-gradient text-glacier-foreground">
@@ -58,9 +49,6 @@ export function TrainingLog({ session }: { session: Session }) {
         <div className="max-w-3xl mx-auto px-5 pt-6 pb-8">
           <div className="flex items-center justify-between">
             <p className="font-display uppercase tracking-[0.25em] text-xs text-primary">Sci Club Liberi Tutti</p>
-            <button onClick={() => supabase.auth.signOut()} className="text-glacier-foreground/70 hover:text-glacier-foreground" aria-label="Esci">
-              <LogOut className="size-5" />
-            </button>
           </div>
           <h1 className="font-display text-4xl font-extrabold uppercase mt-2">Registro allenamenti</h1>
           <div className="grid grid-cols-3 gap-3 mt-6">
@@ -85,10 +73,6 @@ export function TrainingLog({ session }: { session: Session }) {
             </button>
           ))}
         </div>
-        <label className="flex items-center gap-2 text-sm text-muted-foreground mt-2">
-          <input type="checkbox" checked={mineOnly} onChange={(e) => setMineOnly(e.target.checked)} className="accent-primary" />
-          Solo le mie sessioni
-        </label>
 
         <div className="mt-4 space-y-3">
           {loading ? (
@@ -129,11 +113,6 @@ export function TrainingLog({ session }: { session: Session }) {
                   {r.notes && <p className="text-sm mt-2 whitespace-pre-line">{r.notes}</p>}
                   <div className="flex items-center justify-between mt-3 text-xs text-muted-foreground">
                     <span>{r.coach_name}</span>
-                    {r.user_id === session.user.id && (
-                      <button onClick={() => remove(r.id)} aria-label="Elimina" className="hover:text-destructive">
-                        <Trash2 className="size-4" />
-                      </button>
-                    )}
                   </div>
                 </div>
               </article>
@@ -151,7 +130,6 @@ export function TrainingLog({ session }: { session: Session }) {
       <SessionForm
         open={open}
         onOpenChange={setOpen}
-        coachName={(session.user.user_metadata?.["full_name"] as string) || session.user.email || ""}
         onSaved={(row) => setRows((r) => [row, ...r].sort((a, b) => b.session_date.localeCompare(a.session_date)))}
       />
     </div>
