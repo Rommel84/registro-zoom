@@ -1,0 +1,12 @@
+ALTER TABLE public.training_sessions ALTER COLUMN user_id SET DEFAULT gen_random_uuid();
+COMMENT ON COLUMN public.training_sessions.user_id IS 'DEPRECATED: legacy account ownership; public sessions use a generated UUID without an account.';
+DROP POLICY IF EXISTS "Coaches add own sessions" ON public.training_sessions;
+DROP POLICY IF EXISTS "Coaches delete own sessions" ON public.training_sessions;
+DROP POLICY IF EXISTS "Coaches edit own sessions" ON public.training_sessions;
+DROP POLICY IF EXISTS "Coaches read club log" ON public.training_sessions;
+REVOKE UPDATE, DELETE ON public.training_sessions FROM anon, authenticated;
+GRANT SELECT, INSERT ON public.training_sessions TO anon, authenticated;
+GRANT ALL ON public.training_sessions TO service_role;
+ALTER TABLE public.training_sessions ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Public read club log" ON public.training_sessions FOR SELECT TO anon, authenticated USING (true);
+CREATE POLICY "Public add sessions" ON public.training_sessions FOR INSERT TO anon, authenticated WITH CHECK (true);

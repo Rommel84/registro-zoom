@@ -8,6 +8,13 @@
       "when": 1793182450557,
       "tag": "0000_create_training_sessions",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1793183455404,
+      "tag": "0001_public_training_log",
+      "breakpoints": true
     }
   ]
 }
