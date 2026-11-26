@@ -15,3 +15,4 @@
 - Preserve the original register as a same-origin embedded document, with a typed browser bridge for shared session reads and inserts; this retains its complete original UI without reintroducing account checks.
 - Auxiliary original-register data stays device-local; do not publish the original bundled athlete roster, which contains children's personal details.
 - Store original session details as versioned JSON in the existing notes column and decode legacy rows, preserving the existing shared table and denying shared updates/deletes.
+- The embedded register loads its available categories and sections from a single browser-safe configuration, so every selector uses the same tested choices.
